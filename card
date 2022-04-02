@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp1
+{
+    class DepositCard
+    {
+        public int amount;
+        public void account(int repay, int payday)
+        { 
+            
+                amount -= repay;
+                Console.WriteLine("还款{0}，储蓄卡余额{1}", repay, amount);
+                        
+            
+        }
+        public void display()
+        {
+            Console.WriteLine("储蓄卡余额为{0}", amount);
+        }
+        
+
+    }
+
+    internal class Program
+    {
+        class CreditCard
+        {
+            private int money;
+            private int repayday;
+            public CreditCard(int money, int repayday)
+            {
+                this.money = money;
+                this.repayday = repayday;
+            }
+            public int getmoney()
+            {
+                return money;
+            }
+            public int getrepayday()
+            {
+                return repayday;
+            }
+        }
+        class Delegate
+        {
+            public delegate void DelegateRepay(int money, int repayday);
+            public event DelegateRepay Pay;
+            public int money;
+            public int repayday;
+            public void Notify()
+            {
+                Console.Write("今天是{0}号,", DateTime.Today.Day);            
+                if (DateTime.Today.Day == repayday)
+                {
+                    Pay(money, repayday);
+                    Console.WriteLine("还款成功");
+                }
+                else
+                    Console.WriteLine("未到还款日期");
+
+
+
+            }
+        }
+        static void Main(string[] args)
+        {
+                int i = 1;
+                DepositCard D1 = new DepositCard();
+                D1.amount = 10000;
+                CreditCard C1 = new CreditCard(2000, 31);
+                List<CreditCard> Cards = new List<CreditCard>();
+                Cards.Add(C1);
+                foreach (CreditCard card in Cards)
+                {
+                    Console.WriteLine("信用卡C{0}:", i++);
+                    Delegate A = new Delegate();
+                    A.money = card.getmoney();
+                    A.repayday = card.getrepayday();
+                    A.Pay += new Delegate.DelegateRepay(D1.account);
+                    A.Notify();
+                    D1.display();
+                    Console.WriteLine("\n");
+                }
+                Console.ReadLine();
+            }
+
+        }
+    }
+
